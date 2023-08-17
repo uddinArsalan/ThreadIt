@@ -22,9 +22,9 @@
     "nodemon": "^2.0.22",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-rough-notation": "^1.0.5",
     "react-twitter-embed": "^4.0.4",
-    "twitter-api-v2": "^1.14.3",
-    "zustand": "^4.3.8"
+    "twitter-api-v2": "^1.14.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",

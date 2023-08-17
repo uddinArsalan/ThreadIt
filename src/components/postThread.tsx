@@ -1,8 +1,7 @@
-import { getDatabase, ref, onValue } from "firebase/database";
+import { ref, onValue } from "firebase/database";
 import { auth, db } from "./TwitterAuth";
 import axios from "axios";
-import { create } from 'zustand'
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 interface sequenceObjectArray {
   type: string;
   content: string;
@@ -12,29 +11,18 @@ interface tokensObject {
   secrets: string;
 }
 
-interface tweetArrayInterface {
-  tweetIds: string[]
-  setTweetId: (tweetId: string) => void
-}
-
 interface sequenceObject {
-  sequenceData: sequenceObjectArray[]
+  sequenceData: sequenceObjectArray[];
 }
 
 const PostToTwitter = ({ click }: any) => {
   const [tokensObject, setTokensObject] = useState<tokensObject>({
     tokens: "",
-    secrets: ""
+    secrets: "",
   });
-  const [threadContentArray, setThreadContentArray] = useState<sequenceObject>();
+  const [threadContentArray, setThreadContentArray] =
+    useState<sequenceObject>();
   const [tweetIds, setTweetIds] = useState<string[]>([]);
-  // const useStore = create<tweetArrayInterface>()((set) => ({
-  //   tweetIds: [],
-  //   setTweetId: (tweetId) => set((state) => ({ tweetIds: [...state.tweetIds, tweetId] })),
-  // }))
-
-  // const setTweetIds = useStore((state) => state.setTweetId);
-  // const tweetIds = useStore((state) => state.tweetIds)
 
   useEffect(() => {
     const tokenRef = ref(db, `tokens/${auth.currentUser?.uid}`);
@@ -42,87 +30,140 @@ const PostToTwitter = ({ click }: any) => {
     onValue(threadContentRef, (snapshot) => {
       const content = snapshot.val();
       setThreadContentArray(content);
-    })
+    });
     onValue(tokenRef, (snapshot) => {
       const data = snapshot.val();
-      setTokensObject(data)
+      setTokensObject(data);
     });
   }, []);
   const MAX_CHARACTERS = 280;
 
   const postContent = async () => {
-    let nextTweetContent = ''
+    let nextTweetContent = "";
+    let updatedTweetIds: string[] = [];
     // Iterate over the content array and post each element as a tweet
     if (threadContentArray) {
-      const array = threadContentArray.sequenceData
+      const array = threadContentArray.sequenceData;
       for (let i = 0; i < array.length; i++) {
-        const element = array[i];
-        console.log(element.type);
+        let element = array[i];
+        // console.log(element.type);
+        if (element.content == "") {
+          continue;
+        }
         if (element.content.length >= 280) {
           const parts = splitTweetContent(element);
-          for (let j = 0; j < parts.length; j++) {
-            const ele = parts[j];
-            if (element.type === 'paragraph' || element.type === 'code' || element.type === 'heading') {
-              const tweetContent = ele;
-              nextTweetContent = tweetContent
-              const tweetId: string = await postTweet(tweetContent);
-              if(tweetId){
-                setTweetIds((prevId) => [...prevId,tweetId])
+          for (let j = 0; j < parts.length; j++) {    
+            // if (parts[j] == "") {
+            //   continue;
+            // }
+
+            if (i == 0 && j == 0) {
+              if (
+                element.type === "paragraph" ||
+                element.type === "code" ||
+                element.type === "heading"
+              ) {
+                const tweetContent = parts[j];
+                // console.log(tweetContent);
+                console.log(`In i (${i}) == 0 && j (${j}) == 0`)
+                nextTweetContent = tweetContent;
+                let tweetId = await postTweet(tweetContent);
+                updatedTweetIds.push(tweetId);
+              } 
+            }
+              if (j == 0 && i != 0) {
+                if (
+                  element.type === "paragraph" ||
+                  element.type === "code" ||
+                  element.type === "heading"
+                ) {
+                  const tweetContent = parts[j];
+                  // console.log(tweetContent);
+                  console.log(`In j ${j} == 0 && i ${i} != 0`)
+                  nextTweetContent = tweetContent;
+                  // console.log(updatedTweetIds[j - 1]);
+                  let tweetId = await replyToTweet(
+                    tweetContent,
+                    updatedTweetIds[updatedTweetIds.length - 1]
+                  );
+                  updatedTweetIds.push(tweetId);
+                }
               }
-              // setTweetIds((prevIds : string[]) => {
-              //   return [...prevIds, tweetId]
-              // });
+            
+            if (updatedTweetIds.length >= 1 && j >= 1) {
+              const tweetContent = parts[j];
+              console.log(`In j ${j} >= 1`);
+              nextTweetContent = tweetContent;
+              // console.log(updatedTweetIds[j - 1]);
+              let tweetId = await replyToTweet(
+                tweetContent,
+                updatedTweetIds[updatedTweetIds.length - 1]
+              );
+              updatedTweetIds.push(tweetId);
             }
-            if (j > 0) {
-              const tweetContent = ele;
-              await replyToTweet(tweetIds[j - 1], tweetContent);
+          }
+        } else {
+          // console.log(i, updatedTweetIds); // Here getting 1,[] then 2,[] and so on ... so only first image is posted without posting other tweets since tweetIds array is not updated or getting updated array in this postContent async function
+
+          if (i == 0) {
+            if (
+              element.type === "paragraph" ||
+              element.type === "code" ||
+              element.type === "heading"
+            ) {
+              // console.log("Real Image uploaded")
+              let tweetContent = element.content;
+              nextTweetContent = tweetContent;
+              let tweetId = await postTweet(tweetContent);
+              updatedTweetIds.push(tweetId);
             }
 
+            // Handle image elements
+            else if (element.type === "img") {
+              let imageUrl = element.content;
+              let mediaId = await uploadImage(imageUrl);
+              let tweetId = await postTweetWithImage(mediaId, nextTweetContent);
+              updatedTweetIds.push(tweetId);
+            }
+          }
+          if (updatedTweetIds.length >= 1 && i >= 1) {
+            if (
+              element.type === "paragraph" ||
+              element.type === "code" ||
+              element.type === "heading"
+            ) {
+              let tweetContent = element.content;
+              nextTweetContent = tweetContent;
+              // await sleep(1000); // Add a delay to ensure tweetIds state is updated
+              let tweetId = await replyToTweet(
+                tweetContent,
+                updatedTweetIds[updatedTweetIds.length - 1]
+              );
+              updatedTweetIds.push(tweetId);
+              // console.log(updatedTweetIds);
+              // console.log(updatedTweetIds[i-1]);
+            }
+
+            // Handle image elements
+            else if (element.type === "img") {
+              // console.log("Image Type")
+              let imageUrl = element.content;
+              let mediaId = await uploadImage(imageUrl);
+              // await postTweetWithImage(mediaId, nextTweetContent);
+              // await sleep(1000);
+              let tweetId = await replyToTweetImage(
+                nextTweetContent,
+                updatedTweetIds[updatedTweetIds.length - 1],
+                mediaId
+              );
+              updatedTweetIds.push(tweetId);
+            }
           }
         }
-
-        else {
-
-          if (element.type === 'paragraph' || element.type === 'code' || element.type === 'heading') {
-            // console.log('text')
-            const tweetContent = element.content;
-            nextTweetContent = tweetContent;
-            const tweetId: string = await postTweet(tweetContent);
-            if(tweetId){
-              setTweetIds((prevId) => [...prevId,tweetId])
-            }
-            // setTweetIds((prevIds: string[]) => {
-            //   return [...prevIds, tweetId]
-            // });
-            console.log(tweetId,tweetIds)
-          }
-
-          // Handle image elements
-          else if (element.type === 'img') {
-            const imageUrl = element.content;
-            const mediaId = await uploadImage(imageUrl);
-            const tweetId : string = await postTweetWithImage(mediaId, nextTweetContent);
-            // setTweetIds((prevIds: string[]) => {
-            //   return [...prevIds, tweetId]
-            // });
-            if(tweetId){
-              setTweetIds((prevId) => [...prevId,tweetId])
-            }
-            console.log(mediaId,tweetId,tweetIds)
-          }
-
-          // Maintain the sequence by using the tweet IDs and in_reply_to_status_id parameter
-          if (i > 0) {
-            const tweetContent = element.content;
-            console.log(tweetIds[i - 1])
-            await replyToTweet(tweetIds[i - 1], tweetContent);
-          }
-          // Handle text elements
-        }
-
       }
+      setTweetIds((prevIds) => [...prevIds, ...updatedTweetIds]);
     }
-  }
+  };
 
   function splitTweetContent(tweetContent: sequenceObjectArray) {
     const parts = [];
@@ -131,10 +172,8 @@ const PostToTwitter = ({ click }: any) => {
     while (currentIndex < tweetContent.content.length) {
       // Extract the next 280 characters or less
       const part = tweetContent.content.substr(currentIndex, MAX_CHARACTERS);
-
       // Add the part to the array
       parts.push(part);
-
       // Move the current index to the next position
       currentIndex += MAX_CHARACTERS;
     }
@@ -142,52 +181,83 @@ const PostToTwitter = ({ click }: any) => {
     return parts;
   }
 
-  console.log(tweetIds)
-
   const handleClick = () => {
-    postContent()
-  }
+    postContent();
+  };
 
   const postTweet = async (tweetContent: string) => {
-    const response = await axios.post('http://localhost:3000/tweets', { tweetContent, tokensObject: tokensObject.tokens })
+    const response = await axios.post("http://localhost:3000/tweets", {
+      tweetContent,
+      tokensObject: tokensObject.tokens,
+    });
     const tweetId = response.data.tweetId;
-    console.log(tweetId)
-    return tweetId
+    // setTweetIds((prevId) => [...prevId, tweetId]);
+    return tweetId;
   };
 
   const uploadImage = async (imageUrl: string) => {
-    const response = await axios.post('http://localhost:3000/upload', { imageUrl, tokensObject: tokensObject.tokens })
+    const response = await axios.post("http://localhost:3000/upload", {
+      imageUrl,
+      tokensObject: tokensObject.tokens,
+    });
     const mediaId = response.data.mediaId;
-    console.log(mediaId)
-    return mediaId
+    return mediaId;
   };
 
-  const postTweetWithImage = async (mediaId: string, nextTweetContent: string) => {
-    const response = await axios.post('http://localhost:3000/uploadTweetImage', { mediaId, tokensObject: tokensObject.tokens, nextTweetContent })
+  const postTweetWithImage = async (
+    mediaId: string,
+    nextTweetContent: string
+  ) => {
+    const response = await axios.post(
+      "http://localhost:3000/uploadTweetImage",
+      { mediaId, tokensObject: tokensObject.tokens, nextTweetContent }
+    );
     const tweetId = response.data.tweetId;
-    console.log(tweetId)
-    return tweetId
+    // setTweetIds((prevId) => [...prevId, tweetId]);
+    return tweetId;
   };
 
-  const replyToTweet = async (parentTweetId: string, tweetContent: string) => {
-    console.log(parentTweetId)
-    const response = await axios.post('http://localhost:3000/reply', { parentTweetId, tokensObject: tokensObject.tokens, tweetContent })
-    const replyId = response.data.replyId;
-    console.log(replyId)
-    return replyId
+  const replyToTweet = async (tweetContent: string, parentTweetId: string) => {
+    // console.log(parentTweetId, tweetIds);
+    const response = await axios.post("http://localhost:3000/reply", {
+      parentTweetId,
+      tokensObject: tokensObject.tokens,
+      tweetContent,
+    });
+    const tweetId = response.data.tweetId;
+    // setTweetIds((prevId) => [...prevId, tweetId]);
+    return tweetId;
   };
 
-  const setId = (tweetId : string) => {
-    setTweetIds((prevId) => [...prevId,tweetId])
-  }
-
+  const replyToTweetImage = async (
+    tweetContent: string,
+    parentTweetId: string,
+    mediaId: string
+  ) => {
+    // replyToTweetImage
+    const response = await axios.post("http://localhost:3000/replyImage", {
+      tokensObject,
+      tweetContent,
+      parentTweetId,
+      mediaId,
+    });
+    const tweetId = response.data.tweetId;
+    // setTweetIds((prevId) => [...prevId, tweetId]);
+    return tweetId;
+  };
   return (
     <div>
-      <div onClick={click} className="bg-blue-200 w-48 p-6 m-6 cursor-pointer">Post Thread </div>
-      <div onClick={handleClick} className="bg-blue-200 w-48 p-6 m-6 cursor-pointer">Now Post On Twitter</div>
-      <div className="bg-blue-200 w-48 p-6 m-6 cursor-pointer" onClick={() => setId(crypto.randomUUID())}>Set Id</div>
+      <div onClick={click} className="bg-blue-900 w-fit p-4 rounded-md m-6 cursor-pointer text-white text-sm font-semibold">
+        Post Thread{" "}
+      </div>
+      <div
+        onClick={handleClick}
+        className="bg-blue-900 w-fit p-4 m-6 cursor-pointer rounded-md text-white font-semibold text-sm"
+      >
+        Now Post On Twitter
+      </div>
     </div>
-  )
+  );
 };
 
 export default PostToTwitter;

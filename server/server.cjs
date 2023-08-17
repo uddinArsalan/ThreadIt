@@ -10,7 +10,8 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/tweets", async (req, res) => {
-  const { tweetContent, tokensObject } = req.body;
+  console.log("Tweets")
+  const { tweetContent, tokensObject} = req.body;
   const accessTokenSecret = tokensObject.secrets;
   const accessToken = tokensObject.tokens;
 
@@ -32,7 +33,8 @@ app.post("/tweets", async (req, res) => {
     // Make API request to post a tweet and return the tweet ID
     const { data: createdTweet } = await v2Client.tweet(tweetContent);
     const tweetId = createdTweet.id;
-    console.log(typeof tweetId)
+    // await v2Client.reply(tweetContent,previousTweetId)
+    // console.log(typeof tweetId)
     res.json({tweetId})
     // client.post(
     //   "statuses/update",
@@ -57,6 +59,7 @@ app.post("/tweets", async (req, res) => {
 });
 
 app.post('/upload', async(req,res) => {
+  console.log("Upload")
   const { imageUrl, tokensObject } = req.body;
   const accessTokenSecret = tokensObject.secrets;
   const accessToken = tokensObject.tokens;
@@ -83,6 +86,7 @@ app.post('/upload', async(req,res) => {
 })
 
 app.post("/uploadTweetImage", async (req, res) => {
+  console.log("Upload Tweet Image")
   const { mediaId, tokensObject, nextTweetContent } = req.body;
   const accessTokenSecret = tokensObject.secrets;
   const accessToken = tokensObject.tokens;
@@ -97,7 +101,8 @@ app.post("/uploadTweetImage", async (req, res) => {
   try {
     // Make API request to upload an image and return the media ID
     const { data: createdTweet } = await v2Client.tweet(nextTweetContent, {media: {  media_ids: [mediaId] }});
-    const tweetId = createdTweet.id
+    // await v2Client.reply(createdTweet.data,previousTweetId)
+    const tweetId = createdTweet.id;
     res.json({tweetId});
     
   } catch (error) {
@@ -107,7 +112,9 @@ app.post("/uploadTweetImage", async (req, res) => {
   }
 });
 
+
 app.post("/reply", async (req, res) => {
+  console.log("Reply")
   const { parentTweetId, tokensObject, tweetContent } = req.body;
   console.log(parentTweetId)
   const accessTokenSecret = tokensObject.secrets;
@@ -124,10 +131,10 @@ app.post("/reply", async (req, res) => {
   
   try {
     // Make API request to reply to a tweet and link it to the parent tweet using the in_reply_to_status_id parameter
-    await v2Client.reply(tweetContent,parentTweetId)
+    const {data : createdTweet} = await v2Client.reply(tweetContent,parentTweetId)
       
-    // const replyId = createdTweet.id
-    // res.json({replyId});
+    const tweetId = createdTweet.id
+    res.json({tweetId});
 
   } catch (error) {
     // Handle error cases
@@ -135,6 +142,33 @@ app.post("/reply", async (req, res) => {
     res.status(500).json({ error: "Error posting reply tweet" });
   }
 });
+
+app.post('/replyImage',async (req,res) => {
+  console.log("Reply Image")
+  const {tokensObject, tweetContent,parentTweetId,mediaId } = req.body;
+  const accessTokenSecret = tokensObject.secrets;
+  const accessToken = tokensObject.tokens;
+
+  const userClient = new TwitterApi({
+    appKey: process.env.CONSUMER_KEY,
+    appSecret: process.env.CONSUMER_SECRET,
+    accessToken: accessToken,
+    accessSecret: accessTokenSecret,
+  });
+
+  const v1Client = userClient.v1;
+
+  try{
+
+    const {data : createdTweet} = await v1Client.reply(tweetContent,parentTweetId,{ media_ids: mediaId });
+    const tweetId = createdTweet.id;
+    res.json({tweetId});
+  } 
+  catch(error) {
+    console.error("Error posting thread:", error);
+    res.status(500).json({ error: "Error posting reply tweet" });
+  }
+})
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
