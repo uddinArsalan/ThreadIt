@@ -6,8 +6,14 @@ const axios = require('axios')
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
+app.use(cors(
+  {
+    origin : ["https://thread-it-one.vercel.app/"],
+    methods : ["POST", "GET"],
+    credentials : true
+  }
+));
 app.use(express.json());
-app.use(cors());
 
 app.post("/tweets", async (req, res) => {
   console.log("Tweets")
