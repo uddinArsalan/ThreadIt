@@ -1,11 +1,9 @@
-// const Twitter = require('twitter-lite')
+require("dotenv").config();
 const { TwitterApi } = require('twitter-api-v2');
 const express = require("express");
-// const Twit = require("twit");
 const axios = require('axios')
 const app = express();
 const cors = require("cors");
-require("dotenv").config();
 app.use(express.json());
 app.use(cors());
 
@@ -14,12 +12,6 @@ app.post("/tweets", async (req, res) => {
   const { tweetContent, tokensObject} = req.body;
   const accessTokenSecret = tokensObject.secrets;
   const accessToken = tokensObject.tokens;
-
-  // if (tweetContent.length > 280) {
-  //   res.status(400).json({ error: 'Tweet content exceeds the character limit' });
-  //   return;
-  // }
-
   const userClient = new TwitterApi({
     appKey: process.env.CONSUMER_KEY,
     appSecret: process.env.CONSUMER_SECRET,

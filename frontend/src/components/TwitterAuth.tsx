@@ -34,8 +34,8 @@ interface TwitterContextType {
 
 const firebaseConfig = {
   apiKey: "AIzaSyCCjB2iBqAUDM0Iemaw_atKz-JffAeyPPk",
-  // authDomain: "thread-it-7890b.firebaseapp.com",
-  authDomain : "thread-it-one.vercel.app",
+  authDomain: "thread-it-7890b.firebaseapp.com",
+  // authDomain : "thread-it-one.vercel.app",
   projectId: "thread-it-7890b",
   storageBucket: "thread-it-7890b.appspot.com",
   messagingSenderId: "961995972885",

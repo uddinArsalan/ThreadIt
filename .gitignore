@@ -27,3 +27,6 @@ dist-ssr
 .netlify
 
 .vercel
+
+# Ignore .env files
+.env
