@@ -6,11 +6,32 @@
             "use" : "@vercel/node"
         }
     ],
-    "routes" : [
-        {
-            "src": "/(.*)",
-            "dest" : "/"
-        }
-    ],
+    "routes": [
+    {
+      "src": "/tweets",
+      "dest": "https://thread-it-server.vercel.app/tweets",
+      "methods": ["POST"]
+    },
+    {
+      "src": "/upload",
+      "dest": "https://thread-it-server.vercel.app/upload",
+      "methods": ["POST"]
+    },
+    {
+      "src": "/uploadTweetImage",
+      "dest": "https://thread-it-server.vercel.app/uploadTweetImage",
+      "methods": ["POST"]
+    },
+    {
+      "src": "/reply",
+      "dest": "https://thread-it-server.vercel.app/reply",
+      "methods": ["POST"]
+    },
+    {
+      "src": "/replyImage",
+      "dest": "https://thread-it-server.vercel.app/replyImage",
+      "methods": ["POST"]
+    }
+  ]
     
 }
