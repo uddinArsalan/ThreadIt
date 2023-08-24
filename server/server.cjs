@@ -7,6 +7,10 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors({ origin: "https://thread-it-one.vercel.app" }));
 
+app.get("/", (req,res) => {
+  res.send('Server running successfully')
+});
+
 app.post("/tweets", async (req, res) => {
   console.log("Tweets")
   const { tweetContent, tokensObject} = req.body;
