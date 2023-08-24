@@ -186,7 +186,7 @@ const PostToTwitter = ({ click }: any) => {
   };
 
   const postTweet = async (tweetContent: string) => {
-    const response = await axios.post("http://localhost:3000/tweets", {
+    const response = await axios.post("/tweets", {
       tweetContent,
       tokensObject: tokensObject.tokens,
     });
@@ -196,7 +196,7 @@ const PostToTwitter = ({ click }: any) => {
   };
 
   const uploadImage = async (imageUrl: string) => {
-    const response = await axios.post("http://localhost:3000/upload", {
+    const response = await axios.post("/upload", {
       imageUrl,
       tokensObject: tokensObject.tokens,
     });
@@ -209,7 +209,7 @@ const PostToTwitter = ({ click }: any) => {
     nextTweetContent: string
   ) => {
     const response = await axios.post(
-      "http://localhost:3000/uploadTweetImage",
+      "/uploadTweetImage",
       { mediaId, tokensObject: tokensObject.tokens, nextTweetContent }
     );
     const tweetId = response.data.tweetId;
@@ -219,7 +219,7 @@ const PostToTwitter = ({ click }: any) => {
 
   const replyToTweet = async (tweetContent: string, parentTweetId: string) => {
     // console.log(parentTweetId, tweetIds);
-    const response = await axios.post("http://localhost:3000/reply", {
+    const response = await axios.post("/reply", {
       parentTweetId,
       tokensObject: tokensObject.tokens,
       tweetContent,
@@ -235,7 +235,7 @@ const PostToTwitter = ({ click }: any) => {
     mediaId: string
   ) => {
     // replyToTweetImage
-    const response = await axios.post("http://localhost:3000/replyImage", {
+    const response = await axios.post("/replyImage", {
       tokensObject,
       tweetContent,
       parentTweetId,
