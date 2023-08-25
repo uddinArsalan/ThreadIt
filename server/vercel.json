@@ -9,27 +9,27 @@
     "routes": [
     {
       "src": "/tweets",
-      "dest": "https://thread-it-server.vercel.app/tweets",
+      "dest": "https://thread-it-server.onrender.com/tweets",
       "methods": ["POST"]
     },
     {
       "src": "/upload",
-      "dest": "https://thread-it-server.vercel.app/upload",
+      "dest": "https://thread-it-server.onrender.com/upload",
       "methods": ["POST"]
     },
     {
       "src": "/uploadTweetImage",
-      "dest": "https://thread-it-server.vercel.app/uploadTweetImage",
+      "dest": "https://thread-it-server.onrender.com/uploadTweetImage",
       "methods": ["POST"]
     },
     {
       "src": "/reply",
-      "dest": "https://thread-it-server.vercel.app/reply",
+      "dest": "https://thread-it-server.onrender.com/reply",
       "methods": ["POST"]
     },
     {
       "src": "/replyImage",
-      "dest": "https://thread-it-server.vercel.app/replyImage",
+      "dest": "https://thread-it-server.onrender.com/replyImage",
       "methods": ["POST"]
     }
   ]
