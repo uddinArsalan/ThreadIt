@@ -6,18 +6,10 @@ const app = express();
 const cors = require("cors");
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
-const allowedOrigins = ["https://thread-it-one.vercel.app"];
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
 
-app.use(cors(corsOptions));
+app.use(cors({
+    origin: '"https://thread-it-one.vercel.app'
+}));
 
 app.get("/", (req,res) => {
   res.send('Server running successfully');
