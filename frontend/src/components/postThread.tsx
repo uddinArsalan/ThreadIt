@@ -186,7 +186,7 @@ const PostToTwitter = ({ click }: any) => {
   };
 
   const postTweet = async (tweetContent: string) => {
-    const response = await axios.post("/tweets", {
+    const response = await axios.post("https://thread-it-server.onrender.com/tweets", {
       tweetContent,
       tokensObject: tokensObject.tokens,
     });
@@ -196,7 +196,7 @@ const PostToTwitter = ({ click }: any) => {
   };
 
   const uploadImage = async (imageUrl: string) => {
-    const response = await axios.post("/upload", {
+    const response = await axios.post("https://thread-it-server.onrender.com/upload", {
       imageUrl,
       tokensObject: tokensObject.tokens,
     });
@@ -209,7 +209,7 @@ const PostToTwitter = ({ click }: any) => {
     nextTweetContent: string
   ) => {
     const response = await axios.post(
-      "/uploadTweetImage",
+      "https://thread-it-server.onrender.com/uploadTweetImage",
       { mediaId, tokensObject: tokensObject.tokens, nextTweetContent }
     );
     const tweetId = response.data.tweetId;
@@ -219,7 +219,7 @@ const PostToTwitter = ({ click }: any) => {
 
   const replyToTweet = async (tweetContent: string, parentTweetId: string) => {
     // console.log(parentTweetId, tweetIds);
-    const response = await axios.post("/reply", {
+    const response = await axios.post("https://thread-it-server.onrender.com/reply", {
       parentTweetId,
       tokensObject: tokensObject.tokens,
       tweetContent,
@@ -235,7 +235,7 @@ const PostToTwitter = ({ click }: any) => {
     mediaId: string
   ) => {
     // replyToTweetImage
-    const response = await axios.post("/replyImage", {
+    const response = await axios.post("https://thread-it-server.onrender.com/replyImage", {
       tokensObject,
       tweetContent,
       parentTweetId,
