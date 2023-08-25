@@ -9,6 +9,7 @@ app.use(cors({ origin: "https://thread-it-one.vercel.app" }));
 
 app.get("/", (req,res) => {
   res.send('Server running successfully');
+  console.log('Server running successfully');
 });
 
 app.post("/tweets", async (req, res) => {
