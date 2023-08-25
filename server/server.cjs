@@ -4,6 +4,7 @@ const express = require("express");
 const axios = require('axios')
 const app = express();
 const cors = require("cors");
+const PORT = process.env.PORT || 3000;
 app.use(express.json());
 const allowedOrigins = ["https://thread-it-one.vercel.app/"];
 const corsOptions = {
@@ -162,4 +163,6 @@ app.post('/replyImage',async (req,res) => {
   }
 })
 
-
+app.listen(PORT, () => {
+  console.log(`server started on port ${PORT}`);
+});
