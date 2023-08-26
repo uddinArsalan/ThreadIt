@@ -30,9 +30,9 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
     new Set()
   );
 
-  const changeToThread = (('https://cors-anywhere.herokuapp.com/' + url): string) => {
+  const changeToThread = (url : string) => {
     setClick(true);
-    fetch(url)
+    fetch('https://cors-anywhere.herokuapp.com/' + url)
       .then((response: Response) => response.text())
       .then((html: string) => {
         const $ = cheerio.load(html);
