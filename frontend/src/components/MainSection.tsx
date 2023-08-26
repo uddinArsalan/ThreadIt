@@ -30,7 +30,7 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
     new Set()
   );
 
-  const changeToThread = (url: string) => {
+  const changeToThread = (('https://cors-anywhere.herokuapp.com/' + url): string) => {
     setClick(true);
     fetch(url)
       .then((response: Response) => response.text())
