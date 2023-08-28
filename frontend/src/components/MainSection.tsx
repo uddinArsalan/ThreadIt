@@ -32,7 +32,7 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
 
   const changeToThread = (url : string) => {
     setClick(true);
-    fetch(`http://localhost:3001/proxy/${encodeURIComponent(url)}`, {
+    fetch(`https://thread-it-proxy.onrender.com/proxy/${encodeURIComponent(url)}`, {
       method: 'GET',
       mode: 'cors', // Setting the mode to 'cors'
     })
