@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use(cors({
-    origin: '"https://thread-it-one.vercel.app'
+    origin: 'https://thread-it-one.vercel.app'
 }));
 
 app.get("/", (req,res) => {
