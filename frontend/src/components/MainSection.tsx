@@ -32,7 +32,7 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
 
   const changeToThread = (url : string) => {
     setClick(true);
-    fetch('https://cors-anywhere.herokuapp.com/' + url)
+    fetch(`https://proxy.cors.sh/${url}`)
       .then((response: Response) => response.text())
       .then((html: string) => {
         const $ = cheerio.load(html);
