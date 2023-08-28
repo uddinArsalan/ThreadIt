@@ -32,7 +32,10 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
 
   const changeToThread = (url : string) => {
     setClick(true);
-    fetch(`https://proxy.cors.sh/${url}`)
+    fetch(`http://localhost:3001/proxy/${encodeURIComponent(url)}`, {
+      method: 'GET',
+      mode: 'cors', // Setting the mode to 'cors'
+    })
       .then((response: Response) => response.text())
       .then((html: string) => {
         const $ = cheerio.load(html);
