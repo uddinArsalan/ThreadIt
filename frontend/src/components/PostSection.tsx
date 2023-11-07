@@ -1,25 +1,32 @@
 import { ChangeEvent } from "react";
 import PostToTwitter from "./postThread";
+import clsx from "clsx";
 
 const PostSection = ({
   setUrl,
+  status,
   url,
   changeToThread,
   sequenceArray,
-  writeUserData,
+  // writeUserData,
   userId,
-  click,
-  postInDatabase
+  // click,
+  postInDatabase,
 }: any) => {
+  console.log(sequenceArray);
   return (
-    <div className="grid lg:grid-cols-2 lg:grid-rows-1 grid-cols-1 grid-rows-3 lg:min-h-screen">
+    <div
+      className="grid lg:grid-cols-2 lg:grid-rows-1 grid-cols-1 grid-rows-3 lg:min-h-screen"
+      id="main"
+    >
       <div className="bg-gray-300 grid justify-center p-8 lg:p-24 order-2 md:p-16 items-center row-span-2">
         <div className="border-4 border-gray-500 rounded-3xl p-6 md:pt-6 md:pb-6 md:pl-12 md:pr-12 lg:p-10 grid">
           <div className="text-blue-900 font-bold text-2xl font-serif">
             Paste the Link of Blog...
           </div>
-          <div>
+          <form>
             <input
+              required={true}
               type="text"
               name="url"
               id=""
@@ -31,17 +38,25 @@ const PostSection = ({
               placeholder="Paste here ..."
             />
             <button
-              className="text-white bg-blue-900 p-3 rounded-md"
-              onClick={() => {
+              disabled={status == "Pending" || status == "Done"}
+              className={clsx(
+                "text-white p-3 rounded-md",
+                { "bg-blue-900": status == "Submit" },
+                { "bg-green-500": status == "Done" },
+                { "bg-yellow-500": status == "Pending" },
+                { "bg-red-500": status == "Error" }
+              )}
+              onClick={(e) => {
+                e.preventDefault();
                 changeToThread(url);
                 // createTwitterThread(content)
-                writeUserData(userId, Array.from(sequenceArray));
+                // writeUserData(userId, Array.from(sequenceArray));
               }}
             >
-              Submit
+              {status}
             </button>
-          </div>
-        <PostToTwitter key={userId} click={postInDatabase} />
+          </form>
+          <PostToTwitter key={userId} click={postInDatabase} />
         </div>
       </div>
       <div className="bg-gray-900 flex justify-center lg:p-24 p-12 lg:order-2">

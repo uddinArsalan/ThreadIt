@@ -25,18 +25,27 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
   const [url, setUrl] = useState<string>("");
 
   const [click, setClick] = useState<boolean>(false);
+  const [status, setStatus] = useState('Submit');
   const headingTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
   const [sequenceArray, setSequenceArray] = useState<Set<sequenceObject>>(
     new Set()
   );
 
   const changeToThread = (url : string) => {
+    setStatus('Pending')
     setClick(true);
     fetch(`https://thread-it-proxy.onrender.com/proxy/${encodeURIComponent(url)}`, {
       method: 'GET',
       mode: 'cors', // Setting the mode to 'cors'
     })
-      .then((response: Response) => response.text())
+      .then((response: Response) => {
+        if(response.ok){
+          return response.text()
+        }else{
+          setStatus('Error')
+          throw new Error('Network response was not ok.');
+        }
+      })
       .then((html: string) => {
         const $ = cheerio.load(html);
         // const titleElement = $("title").text();
@@ -114,10 +123,16 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
               );
             }
             LiIndex++;
+
           }
+
         });
+        setStatus('Done')
       })
-      .catch((error: Error) => console.log(error));
+      .catch((error: Error) => {
+        console.log(error)
+        setStatus('Error')
+      });
   };
 
   const handleClick = () => {
@@ -160,6 +175,7 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
         userId={userId}
         sequenceArray={sequenceArray}
         click={click}
+        status={status}
         postInDatabase = {handleClick}
       />
 

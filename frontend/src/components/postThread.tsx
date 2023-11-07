@@ -2,6 +2,7 @@ import { ref, onValue } from "firebase/database";
 import { auth, db } from "./TwitterAuth";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import clsx from 'clsx'
 interface sequenceObjectArray {
   type: string;
   content: string;
@@ -23,6 +24,7 @@ const PostToTwitter = ({ click }: any) => {
   const [threadContentArray, setThreadContentArray] =
     useState<sequenceObject>();
   const [tweetIds, setTweetIds] = useState<string[]>([]);
+  const [ statusTweet ,setStatusTweets] = useState("Post On Twitter");
 
   useEffect(() => {
     const tokenRef = ref(db, `tokens/${auth.currentUser?.uid}`);
@@ -39,9 +41,11 @@ const PostToTwitter = ({ click }: any) => {
   const MAX_CHARACTERS = 280;
 
   const postContent = async () => {
+    setStatusTweets("Please Wait..")
     let nextTweetContent = "";
     let updatedTweetIds: string[] = [];
     // Iterate over the content array and post each element as a tweet
+    try{
     if (threadContentArray) {
       const array = threadContentArray.sequenceData;
       for (let i = 0; i < array.length; i++) {
@@ -162,6 +166,11 @@ const PostToTwitter = ({ click }: any) => {
         }
       }
       setTweetIds((prevIds) => [...prevIds, ...updatedTweetIds]);
+    } 
+    setStatusTweets("Successfully Posted")
+  }
+    catch(error){
+      setStatusTweets("Error Posting Tweets.")
     }
   };
 
@@ -245,16 +254,17 @@ const PostToTwitter = ({ click }: any) => {
     // setTweetIds((prevId) => [...prevId, tweetId]);
     return tweetId;
   };
+  
   return (
     <div>
       <div onClick={click} className="bg-blue-900 w-fit p-4 rounded-md m-6 cursor-pointer text-white text-sm font-semibold">
-        Post Thread{" "}
+        Post Thread
       </div>
       <div
         onClick={handleClick}
-        className="bg-blue-900 w-fit p-4 m-6 cursor-pointer rounded-md text-white font-semibold text-sm"
+        className={clsx("bg-blue-900 w-fit p-4 m-6 cursor-pointer rounded-md text-white font-semibold text-sm",{"bg-green-600" : statusTweet == "Successfully Posted"},{"bg-red-600" : statusTweet == "Error Posting Tweets."})}
       >
-        Now Post On Twitter
+        {statusTweet}
       </div>
     </div>
   );
