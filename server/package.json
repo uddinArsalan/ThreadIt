@@ -4,12 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-<<<<<<< HEAD
-    "dev": "nodemon proxy-server.cjs",
-=======
     "start" : "nodemon server.cjs",
     "dev": "nodemon server.cjs",
->>>>>>> 15902d7a52d4f3764ab8f4c28705ace563a89ce7
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
