@@ -4,11 +4,17 @@ const express = require("express");
 const axios = require('axios')
 const app = express();
 const cors = require("cors");
+const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use(cors({
   origin: '"https://thread-it-one.vercel.app'
 }));
+
+app.get("/", (req,res) => {
+  res.send('Server running successfully');
+  console.log('Server running successfully');
+});
 
 app.post("/tweets", async (req, res) => {
   console.log("Tweets")
@@ -150,6 +156,6 @@ app.post('/replyImage',async (req,res) => {
   }
 })
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+app.listen(PORT, () => {
+  console.log(`server started on port ${PORT}`);
 });

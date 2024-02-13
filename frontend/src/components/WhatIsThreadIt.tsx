@@ -2,17 +2,21 @@ import heroImg from "../assets/logos/comp.png";
 // import hashnode from "../assets/logos/logo-standard.svg";
 import { useContext } from "react";
 import { RoughNotation } from "react-rough-notation";
+<<<<<<< HEAD
+=======
+import { Link, Button, Element, Events, animateScroll as scroll, scrollSpy } from 'react-scroll';
+>>>>>>> 15902d7a52d4f3764ab8f4c28705ace563a89ce7
 import {
   TwitterTimelineEmbed,
-  TwitterShareButton,
-  TwitterFollowButton,
-  TwitterHashtagButton,
-  TwitterMentionButton,
-  TwitterTweetEmbed,
-  TwitterMomentShare,
-  TwitterDMButton,
-  TwitterVideoEmbed,
-  TwitterOnAirButton,
+  // TwitterShareButton,
+  // TwitterFollowButton,
+  // TwitterHashtagButton,
+  // TwitterMentionButton,
+  // TwitterTweetEmbed,
+  // TwitterMomentShare,
+  // TwitterDMButton,
+  // TwitterVideoEmbed,
+  // TwitterOnAirButton,
 } from "react-twitter-embed";
 import { TwitterContext } from "./TwitterAuth";
 
@@ -82,9 +86,17 @@ const WhatIsThreadIt = () => {
               and impact across the platform.
             </div>
           </div>
-          <button className="bg-BGColor text-white p-4 rounded-full w-48 float-left">
-            Get Started for free
-          </button>
+          <Link
+            activeClass="active"
+            to="main"
+            spy={true}
+            smooth={true}
+            duration={500}
+          >
+            <button className="bg-BGColor text-white p-4 rounded-full w-48 float-left">
+              Get Started for free
+            </button>
+          </Link>
         </div>
       </div>
     </div>
