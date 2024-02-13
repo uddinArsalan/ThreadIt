@@ -8,10 +8,7 @@ const Footer = () => {
             <div>What is Thread It ?</div>
             <div>How It works</div>
             <div>Join Premium</div>
-            {/* <div className="flex"> */}
-            
             </div>
-            {/* </div> */}
         </div>
     )
 }

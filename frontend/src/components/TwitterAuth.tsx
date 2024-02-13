@@ -9,14 +9,8 @@ import {
 const provider = new TwitterAuthProvider();
 
 import { initializeApp } from "firebase/app";
-// Import the functions you need from the SDKs you need
-// import { getAnalytics } from "firebase/analytics";
 import { getDatabase, ref, set } from "firebase/database";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 interface sequenceObject {
   type: string;
   content: string;
@@ -51,7 +45,6 @@ export const auth = getAuth(app);
 export const db = getDatabase(app);
 export const TwitterContext = createContext<TwitterContextType>(null!);
 // export const userId = auth.currentUser?.uid;
-// console.log(userId)
 
 const TwitterContextProvider = ({ children }: any) => {
   const [username, setUsername] = useState<string>("Arsalan_0101");
@@ -59,8 +52,7 @@ const TwitterContextProvider = ({ children }: any) => {
   const signIn = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-        // You can use these server side with your app's credentials to access the Twitter API.
+        
         const credential = TwitterAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         const secret = credential?.secret;
@@ -107,7 +99,6 @@ const TwitterContextProvider = ({ children }: any) => {
         console.log("Sign-out successful.");
       })
       .catch((error) => {
-        // An error happened.
         console.log("Error", error);
       });
   };

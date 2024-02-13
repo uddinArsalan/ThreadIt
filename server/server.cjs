@@ -5,7 +5,10 @@ const axios = require('axios')
 const app = express();
 const cors = require("cors");
 app.use(express.json());
-app.use(cors());
+
+app.use(cors({
+  origin: '"https://thread-it-one.vercel.app'
+}));
 
 app.post("/tweets", async (req, res) => {
   console.log("Tweets")
@@ -25,24 +28,9 @@ app.post("/tweets", async (req, res) => {
     // Make API request to post a tweet and return the tweet ID
     const { data: createdTweet } = await v2Client.tweet(tweetContent);
     const tweetId = createdTweet.id;
-    // await v2Client.reply(tweetContent,previousTweetId)
-    // console.log(typeof tweetId)
+
     res.json({tweetId})
-    // client.post(
-    //   "statuses/update",
-    //   { status: tweetContent },
-    //   function (err, data, response) {
-    //     const tweetId = data.id_str;
-    //     console.log(data);
-    //     // console.log(response)
-    //     // console.log(tweetId)
-    //     res.json({ tweetId });
-    //   }
-    // );
-    // const response = await twitterClient.post('statuses/update', { status: tweetContent,auto_populate_reply_metadata: true });
-    // console.log('Why it is haappening')
-    // const tweetId = response.data.id_str;
-    // res.json({ tweetId });
+    
   } catch (error) {
     // Handle error cases
     console.error("Error posting tweet:", error);

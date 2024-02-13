@@ -22,15 +22,6 @@ interface sequenceObject {
 
 const MainSection = ({ nav, userId, setUserId }: Props) => {
   const { logOut, signIn, writeUserData } = useContext(TwitterContext);
-  // client_id : cmt0SGZlR1RpQ1RVT3FNUzVyTF86MTpjaQ
-  // client_secret : HRmh4yUT_uH_dn7RNl8D_wGr28GorIydyotAxBuqRswioz81Lz
-  // Bearer Token : AAAAAAAAAAAAAAAAAAAAAN%2F%2FmgEAAAAAhLBNaWtUnYRWl77bHMLoCzAVFTM%3DXkpInKjxrysTB9LaYgjJ3s8r4MVujvBYrttxtBCfdSkeZBLazw
-  // Access Token : 1509424906576236547-trZRxVzOGa78sXNYf1bylpb1NztAjq
-  // Access Token Secret : HrEYWMuDUC26a9c0dmSXw9T9mC1iJYWeOAQTJxodbGH7H
-  // Consumer API Key : RDrrj6qgSQriGcegFs9HQ6g3I
-  // Consumer API Key Secret : X5ZHLem3SHyoyVWoENFvTM8YTgJEnK4yqTvf6zbJAvRfnwGKVo
-  // const [title, setTitle] = useState<string | null>(null);
-  // const [body, setBody] = useState<string | null>(null);
   const [url, setUrl] = useState<string>("");
 
   const [click, setClick] = useState<boolean>(false);
@@ -41,7 +32,10 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
 
   const changeToThread = (url: string) => {
     setClick(true);
-    fetch(url)
+    fetch(`http://localhost:3001/proxy/${encodeURIComponent(url)}`, {
+      method: 'GET',
+      mode: 'cors', // Setting the mode to 'cors'
+    })
       .then((response: Response) => response.text())
       .then((html: string) => {
         const $ = cheerio.load(html);
@@ -167,11 +161,9 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
         sequenceArray={sequenceArray}
         click={click}
         postInDatabase = {handleClick}
-      />
+      />   
 
-      <PaySection />
-
-      {/* {Array.from(sequenceArray).map((element, index) => {
+      {Array.from(sequenceArray).map((element, index) => {
         return (
           <div key={index}>
             {element.type === "heading" ? (
@@ -197,20 +189,9 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
             )}
           </div>
         );
-      })} */}
+      })}
 
-      {/* <PostToTwitter key={userId} click={handleClick} /> */}
-      {/* <TwitterCode /> */}
-      {/* <TwitterTimelineEmbed
-                sourceType="profile"
-                screenName="Arsalan_0101"
-                options={{ height: 400 }}
-            /> */}
-      {/* {click && <TwitterShareButton
-                url={url}
-                options={{ text: body, via: 'Arsalan_0101' }}
-            />} */}
-      {/* <div className="bg-green-400 text-white p-4 w-48 cursor-pointer" onClick={() => writeUserData(userId,sequenceArray)}>Save Data</div> */}
+      <PaySection />
       <LastSection />
     </>
   );

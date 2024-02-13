@@ -1,4 +1,5 @@
 // import heroImg from "../assets/logos/comp.png";
+import React from "react"
 import srcImg from "../assets/lastSec.svg"
 import secondSrc from "../assets/undraw.svg"
 import { RoughNotation,RoughNotationGroup } from "react-rough-notation";

@@ -1,7 +1,7 @@
 import heroImg from "../assets/logos/comp.png";
 // import hashnode from "../assets/logos/logo-standard.svg";
 import { useContext } from "react";
-import { RoughNotation, RoughNotationGroup } from "react-rough-notation";
+import { RoughNotation } from "react-rough-notation";
 import {
   TwitterTimelineEmbed,
   TwitterShareButton,
@@ -18,7 +18,6 @@ import { TwitterContext } from "./TwitterAuth";
 
 const WhatIsThreadIt = () => {
   const { username } = useContext(TwitterContext);
-  // bg-[url('./assets/transparent-grid-overlay-3.png')]
   return (
     <div className="h-98 flex flex-col md:p-12 p-6 bg-grid">
       <div className="grid md:grid-cols-2 lg:p-16 md:p-10">
