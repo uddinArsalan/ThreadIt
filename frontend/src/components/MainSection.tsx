@@ -179,7 +179,7 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
         postInDatabase = {handleClick}
       />   
 
-      {Array.from(sequenceArray).map((element, index) => {
+      {/* {Array.from(sequenceArray).map((element, index) => {
         return (
           <div key={index}>
             {element.type === "heading" ? (
@@ -205,7 +205,7 @@ const MainSection = ({ nav, userId, setUserId }: Props) => {
             )}
           </div>
         );
-      })}
+      })} */}
 
       <PaySection />
       <LastSection />

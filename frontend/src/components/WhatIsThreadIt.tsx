@@ -5,15 +5,6 @@ import { RoughNotation } from "react-rough-notation";
 import { Link, Button, Element, Events, animateScroll as scroll, scrollSpy } from 'react-scroll';
 import {
   TwitterTimelineEmbed,
-  // TwitterShareButton,
-  // TwitterFollowButton,
-  // TwitterHashtagButton,
-  // TwitterMentionButton,
-  // TwitterTweetEmbed,
-  // TwitterMomentShare,
-  // TwitterDMButton,
-  // TwitterVideoEmbed,
-  // TwitterOnAirButton,
 } from "react-twitter-embed";
 import { TwitterContext } from "./TwitterAuth";
 
