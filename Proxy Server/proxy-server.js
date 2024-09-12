@@ -3,7 +3,7 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { typeDefs } from "./graphql/typedefs/index.js";
 import { resolvers } from './graphql/resolvers/index.js';
 
-const PORT = process.env.port || 4000;
+const port = process.env.PORT || 4000;
 
 const server = new ApolloServer({
   typeDefs,
@@ -16,7 +16,7 @@ const server = new ApolloServer({
 });
 
 const { url } = await startStandaloneServer(server, {
-  listen: { port: PORT },
+  listen: { port },
 });
 
 console.log("Server running at port 4000 " + url);
