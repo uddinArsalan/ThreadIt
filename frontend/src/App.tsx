@@ -4,12 +4,11 @@ import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 
 function App() {
-  const [nav,setNav]= useState(false);
-  const [userId,setUserId] = useState<string | undefined>(undefined);
+  const [showNavbar ,setShowNavbar]= useState(false);
   return (
     <div>
-      <Navbar setUserId={setUserId} setNav={setNav}/>
-      <MainSection setUserId={setUserId} userId={userId} nav={nav}/>
+      <Navbar toggleNavbar={() => setShowNavbar(!showNavbar)}/>
+      <MainSection showNavbar={showNavbar}/>
       <Footer />
     </div>
   )

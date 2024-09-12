@@ -9,12 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.8",
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.0.0",
     "firebase": "^9.22.0",
+    "graphql": "^16.9.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.1",
     "react-rough-notation": "^1.0.5",
     "react-scroll": "^1.9.0",
     "react-twitter-embed": "^4.0.4"
