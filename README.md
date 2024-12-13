@@ -1,5 +1,7 @@
 # Thread It
 
+ Blog to Twitter thread conversion tool.
+
 ## Stack
 - React.js
 - TypeScript
